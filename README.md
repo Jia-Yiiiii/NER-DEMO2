@@ -84,7 +84,8 @@ MSRA 用 `0` 分隔句子，Weibo 用空行分隔。代码中通过判断 `line 
 | chinese-bert-wwm | Weibo | ignore | 0.7075 | 0.6460 |
 | chinese-bert-wwm | Weibo | other | 0.7075 | 0.6460 |
 
-### 2.1 MSRA + bert-base-chinese
+### 2.1 MSRA数据集
+1.bert-base-chinese
 
 | 实体类型 | Precision | Recall | F1-score | Support |
 |----------|-----------|--------|----------|---------|
@@ -95,7 +96,7 @@ MSRA 用 `0` 分隔句子，Weibo 用空行分隔。代码中通过判断 `line 
 | macro avg | 90.40% | 94.53% | 92.33% | 1,273 |
 | weighted avg | 91.37% | 94.34% | 92.75% | 1,273 |
 
-### 2.2 MSRA + chinese-bert-wwm
+2. chinese-bert-wwm
 
 **测试集详细结果**
 
@@ -108,19 +109,31 @@ MSRA 用 `0` 分隔句子，Weibo 用空行分隔。代码中通过判断 `line 
 | macro avg | 93.46% | 94.33% | 93.88% | 1,273 |
 | weighted avg | 93.98% | 94.19% | 94.07% | 1,273 |
 
-### 2.3 Weibo + bert-base-chinese
+### 2.2 Weibo 数据集
+1.bert-base-chinese
+运行指令：
+python trainer.py configs/Bert_Config_exp1.json
 
-Entity	Precision	Recall	F1-Score	Support
-GPE.NAM	0.7593	0.8913	0.8200	46
-GPE.NOM	0.0000	0.0000	0.0000	0
-LOC.NAM	0.4545	0.2632	0.3333	19
-LOC.NOM	0.2500	0.3333	0.2857	9
-ORG.NAM	0.5405	0.5128	0.5263	39
-ORG.NOM	0.5385	0.4375	0.4828	16
-PER.NAM	0.7281	0.7545	0.7411	110
-PER.NOM	0.6828	0.7605	0.7195	167
-micro avg	0.6698	0.7010	0.6850	408
-macro avg	0.4942	0.4941	0.4942	408
+| Entity | Precision | Recall | F1-Score | Support |
+|--------|-----------|--------|----------|---------|
+| GPE.NAM | 0.7593 | 0.8913 | 0.8200 | 46 |
+| GPE.NOM | 0.0000 | 0.0000 | 0.0000 | 0 |
+| LOC.NAM | 0.4545 | 0.2632 | 0.3333 | 19 |
+| LOC.NOM | 0.2500 | 0.3333 | 0.2857 | 9 |
+| ORG.NAM | 0.5405 | 0.5128 | 0.5263 | 39 |
+| ORG.NOM | 0.5385 | 0.4375 | 0.4828 | 16 |
+| PER.NAM | 0.7281 | 0.7545 | 0.7411 | 110 |
+| PER.NOM | 0.6828 | 0.7605 | 0.7195 | 167 |
+| micro avg | 0.6698 | 0.7010 | 0.6850 | 408 |
+| macro avg | 0.4942 | 0.4941 | 0.4942 | 408 |
+参数配置日志：
+https://swanlab.cn/@2225/bert-ner1/runs/5231tc0b/overview
+训练图像：
+https://swanlab.cn/@2225/bert-ner1/runs/5231tc0b/chart
+<img width="606" height="365" alt="image" src="https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe" />
+<img width="1522" height="711" alt="image" src="https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471" />
+<img width="1531" height="737" alt="image" src="https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c" />
+
 
 ### 2.4 Weibo + chinese-bert-wwm (ignore)
 
