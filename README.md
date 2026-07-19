@@ -110,9 +110,13 @@ MSRA 用 `0` 分隔句子，Weibo 用空行分隔。代码中通过判断 `line 
 | weighted avg | 93.98% | 94.19% | 94.07% | 1,273 |
 
 ### 2.2 Weibo 数据集
-1.bert-base-chinese
-运行指令：
+
+#### (1) bert-base-chinese
+
+运行命令：
 python trainer.py configs/Bert_Config_exp1.json
+
+测试集结果：
 
 | Entity | Precision | Recall | F1-Score | Support |
 |--------|-----------|--------|----------|---------|
@@ -126,14 +130,20 @@ python trainer.py configs/Bert_Config_exp1.json
 | PER.NOM | 0.6828 | 0.7605 | 0.7195 | 167 |
 | micro avg | 0.6698 | 0.7010 | 0.6850 | 408 |
 | macro avg | 0.4942 | 0.4941 | 0.4942 | 408 |
-参数配置日志：
-https://swanlab.cn/@2225/bert-ner1/runs/5231tc0b/overview
-训练图像：
-https://swanlab.cn/@2225/bert-ner1/runs/5231tc0b/chart
-<img width="606" height="365" alt="image" src="https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe" />
-<img width="1522" height="711" alt="image" src="https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471" />
-<img width="1531" height="737" alt="image" src="https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c" />
 
+训练曲线：
+
+训练损失：
+<img width="400" alt="train loss" src="https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe" />
+
+验证集F1：
+<img width="400" alt="eval f1" src="https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471" />
+
+验证集损失：
+<img width="400" alt="eval loss" src="https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c" />
+
+实验日志：
+https://swanlab.cn/@2225/bert-ner1/runs/5231tc0b/overview
 
 ### 2.4 Weibo + chinese-bert-wwm (ignore)
 
