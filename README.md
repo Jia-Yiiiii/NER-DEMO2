@@ -169,37 +169,36 @@ python trainer.py configs/Bert_Config_exp2.json
 实验日志：
 https://swanlab.cn/@2225/bert-ner1/runs/ufj1wboz/overview
 
-### 2.5 Weibo + chinese-bert-wwm (other)
+### （3）chinese-bert-wwm (other)
+运行命令：
+python trainer.py configs/Bert_Config_exp3.json
+测试集结果：
 
-**测试集详细结果**
-
-| 实体类型 | Precision | Recall | F1-score | Support |
-|----------|-----------|--------|----------|---------|
-| GPE.NAM | 68.75% | 84.62% | 75.86% | 26 |
-| GPE.NOM | 100.00% | 100.00% | 100.00% | 1 |
-| LOC.NAM | 50.00% | 83.33% | 62.50% | 6 |
-| LOC.NOM | 40.00% | 33.33% | 36.36% | 6 |
-| ORG.NAM | 37.50% | 44.68% | 40.78% | 47 |
-| ORG.NOM | 44.44% | 80.00% | 57.14% | 5 |
-| PER.NAM | 73.86% | 73.03% | 73.45% | 89 |
-| PER.NOM | 77.25% | 78.37% | 77.80% | 208 |
-| micro avg | 68.69% | 72.94% | 70.75% | 388 |
-| macro avg | 61.48% | 72.17% | 65.49% | 388 |
-| weighted avg | 69.73% | 72.94% | 71.10% | 388 |
-
+| Entity | Precision | Recall | F1-Score | Support |
+|--------|-----------|--------|----------|---------|
+| GPE.NAM | 0.7593 | 0.8913 | 0.8200 | 46 |
+| GPE.NOM | 0.0000 | 0.0000 | 0.0000 | 2 |
+| LOC.NAM | 0.5000 | 0.2632 | 0.3448 | 19 |
+| LOC.NOM | 0.1667 | 0.1111 | 0.1333 | 9 |
+| ORG.NAM | 0.4545 | 0.5128 | 0.4819 | 39 |
+| ORG.NOM | 0.5000 | 0.4375 | 0.4667 | 16 |
+| PER.NAM | 0.7453 | 0.7182 | 0.7315 | 110 |
+| PER.NOM | 0.6707 | 0.6707 | 0.6707 | 167 |
+| micro avg | 0.6608 | 0.6495 | 0.6551 | 408 |
+| macro avg | 0.4746 | 0.4506 | 0.4623 | 408 |
 ---
+**训练曲线**
 
-## 三、结果分析
+![训练损失](https://github.com/user-attachments/assets/a89f7f4e-654f-4d79-933c-0e9280892721)
 
-| 观察点 | 结论 |
-|--------|------|
-| MSRA vs Weibo | MSRA 上测试 F1 达 0.94，Weibo 上仅 0.66-0.70，社交媒体文本 NER 难度显著更高 |
-| 模型对比 | `chinese-bert-wwm` 在 MSRA 上优于 `bert-base-chinese`（F1: 0.9404 vs 0.9263） |
-| 对齐策略 | `ignore` 和 `other` 在 Weibo 上结果几乎相同，差异不大 |
+![验证集F1](https://github.com/user-attachments/assets/e7a63086-64fc-40bd-9ed5-5598531ca48a)
 
----
+![验证集损失](https://github.com/user-attachments/assets/c7b72f59-2dff-4c6f-ac6e-b104bbd1597d)
+实验日志：
+https://swanlab.cn/@2225/bert-ner1/runs/qh1l6lak/overview
 
-## 四、项目结构
+
+## 三、项目结构
 
 ```text
 BERT-NER-DEMO2/
