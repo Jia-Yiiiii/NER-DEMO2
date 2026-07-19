@@ -8,8 +8,8 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 from data import NERDataset
 from model import BertForNER
-from utils import set_seed, evaluate_ner, decode_predict
-
+from utils import set_seed, evaluate_ner, decode_predict, print_report
+import argparse
 class Trainer:
     def __init__(self, config):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -220,6 +220,8 @@ class Trainer:
                 all_preds.extend(batch_preds)
                 all_labels.extend(batch_labels)
 
+        print_report(all_labels, all_preds)
+
         f1, precision, recall = evaluate_ner(all_labels, all_preds, plot=True, save_path="test_results.png")
         print("测试集:", precision, "Recall:", recall, "F1:", f1)
 
@@ -236,7 +238,11 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    with open("configs/Bert_Config_exp1.json", "r", encoding="utf-8") as f:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config_path")
+    args = parser.parse_args()
+
+    with open(args.config_path, "r", encoding="utf-8") as f:
         config = json.load(f)
 
     trainer = Trainer(config)
