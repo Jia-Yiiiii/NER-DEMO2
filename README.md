@@ -133,13 +133,8 @@ python trainer.py configs/Bert_Config_exp1.json
 
 训练曲线：
 
-训练损失：
 <img width="400" alt="train loss" src="https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe" />
-
-验证集F1：
 <img width="400" alt="eval f1" src="https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471" />
-
-验证集损失：
 <img width="400" alt="eval loss" src="https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c" />
 
 实验日志：
