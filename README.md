@@ -74,41 +74,51 @@ MSRA 用 `0` 分隔句子，Weibo 用空行分隔。代码中通过判断 `line 
 
 ## 二、实验结果
 
-### 整体结果对比
-
-| 模型 | 数据集 | 对齐策略 | 最佳验证 F1 | 测试集 F1 |
-|------|--------|----------|-------------|-----------|
-| bert-base-chinese | MSRA | ignore | 0.9263 | 0.9192 |
-| chinese-bert-wwm | MSRA | ignore | 0.9403 | 0.9095 |
-| bert-base-chinese | Weibo | ignore | 0.7117 | 0.6682 |
-| chinese-bert-wwm | Weibo | ignore | 0.7075 | 0.6460 |
-| chinese-bert-wwm | Weibo | other | 0.7075 | 0.6460 |
-
 ### 2.1 MSRA数据集
-1.bert-base-chinese
+#### (1) bert-base-chinese
 
-| 实体类型 | Precision | Recall | F1-score | Support |
-|----------|-----------|--------|----------|---------|
-| LOC | 94.52% | 93.93% | 94.23% | 643 |
-| ORG | 80.54% | 92.26% | 86.00% | 323 |
-| PER | 96.14% | 97.39% | 96.76% | 307 |
-| micro avg | 90.98% | 94.34% | 92.63% | 1,273 |
-| macro avg | 90.40% | 94.53% | 92.33% | 1,273 |
-| weighted avg | 91.37% | 94.34% | 92.75% | 1,273 |
+运行命令：
+python trainer.py configs/Bert_Config_exp4.json
 
-2. chinese-bert-wwm
+测试集结果：
+| Entity | Precision | Recall | F1-Score | Support |
+|--------|-----------|--------|----------|---------|
+| LOC | 0.9444 | 0.9130 | 0.9284 | 632 |
+| ORG | 0.8500 | 0.8881 | 0.8686 | 268 |
+| PER | 0.9537 | 0.9695 | 0.9615 | 361 |
+| micro avg | 0.9261 | 0.9239 | 0.9250 | 1261 |
+| macro avg | 0.9160 | 0.9235 | 0.9198 | 1261 |
+**训练曲线**
+
+![训练损失](https://github.com/user-attachments/assets/f3e40a8a-8628-460c-ac8d-ef4bbe1bbc93)
+
+![验证集F1](https://github.com/user-attachments/assets/830c2fd8-e166-4a00-8137-73199fae30ac)
+
+![验证集损失](https://github.com/user-attachments/assets/2429c10a-4d5f-4d2b-b051-0e727f71f234)
+
+实验日志：
+https://swanlab.cn/@2225/bert-ner1/runs/9e6lwqi6/overview
+#### (2) chinese-bert-wwm
+运行命令：
+python trainer.py configs/Bert_Config_exp5.json
 
 **测试集详细结果**
 
-| 实体类型 | Precision | Recall | F1-score | Support |
-|----------|-----------|--------|----------|---------|
-| LOC | 95.72% | 93.93% | 94.82% | 643 |
-| ORG | 87.24% | 91.02% | 89.09% | 323 |
-| PER | 97.41% | 98.05% | 97.73% | 307 |
-| micro avg | 93.89% | 94.19% | 94.04% | 1,273 |
-| macro avg | 93.46% | 94.33% | 93.88% | 1,273 |
-| weighted avg | 93.98% | 94.19% | 94.07% | 1,273 |
+| Entity | Precision | Recall | F1-Score | Support |
+|--------|-----------|--------|----------|---------|
+| LOC | 0.9341 | 0.8972 | 0.9153 | 632 |
+| ORG | 0.8783 | 0.8619 | 0.8701 | 268 |
+| PER | 0.9420 | 0.9446 | 0.9433 | 361 |
+| micro avg | 0.9245 | 0.9033 | 0.9138 | 1261 |
+| macro avg | 0.9181 | 0.9012 | 0.9096 | 1261 |
 
+**训练曲线**
+<img width="606" height="358" alt="image" src="https://github.com/user-attachments/assets/bc57830c-9ccc-4c11-a28b-9e7f4b020e65" />
+<img width="1547" height="680" alt="image" src="https://github.com/user-attachments/assets/b8b9dc5f-3603-4270-b096-422bc92707d1" />
+<img width="1516" height="726" alt="image" src="https://github.com/user-attachments/assets/bad83de4-f5db-40e7-8c74-232a27eb42bb" />
+
+实验日志：
+https://swanlab.cn/@2225/bert-ner1/runs/jzn297xe/overview
 ### 2.2 Weibo 数据集
 
 #### (1) bert-base-chinese
