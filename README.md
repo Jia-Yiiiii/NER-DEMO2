@@ -250,7 +250,10 @@ BERT-NER-DEMO2/
 │       └── test.txt
 ├── configs/
 │   └── Bert_Config_exp1.json
-├── checkpoints/
+│   └── Bert_Config_exp2.json
+│   └── Bert_Config_exp3.json
+│   └── Bert_Config_exp4.json
+│   └── Bert_Config_exp5.json
 ├── data.py
 ├── model.py
 ├── trainer.py
