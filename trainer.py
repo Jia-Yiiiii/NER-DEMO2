@@ -4,7 +4,7 @@ import json
 import torch
 import swanlab
 from torch.optim import AdamW
-from transformers import BertTokenizer
+from transformers import AutoTokenizer
 from tqdm import tqdm
 from data import NERDataset
 from model import BertForNER
@@ -25,7 +25,10 @@ class Trainer:
         set_seed(config.get("seed", 42))
 
     def load_data(self):
-        tokenizer = BertTokenizer.from_pretrained(self.config["model_name"])
+        tokenizer = AutoTokenizer.from_pretrained(
+            self.config["model_name"],
+            use_fast=True
+        )
 
         train_config = {
             'data_path': os.path.join(self.config["data_dir"], self.config["train_file"]),
@@ -43,7 +46,6 @@ class Trainer:
             'align_type': self.config.get("align_type", "ignore")
         }
 
-
         train_set = NERDataset(train_config, tokenizer)
         tmp = train_set.label2id
         dev_config['label2id'] = tmp
@@ -52,7 +54,6 @@ class Trainer:
         dev_set = NERDataset(dev_config, tokenizer)
         test_set = NERDataset(test_config, tokenizer)
 
-        # 创建dataloader
         self.train_loader = train_set.get_loader(self.config["batch_size"], True)
         self.dev_loader = dev_set.get_loader(self.config["batch_size"], False)
         self.test_loader = test_set.get_loader(self.config["batch_size"], False)
@@ -79,7 +80,10 @@ class Trainer:
         with open(os.path.join(save_dir, name + "_label2id.json"), "w", encoding="utf-8") as f:
             json.dump(self.label2id, f)
 
-        tokenizer = BertTokenizer.from_pretrained(self.config["model_name"])
+        tokenizer = AutoTokenizer.from_pretrained(
+            self.config["model_name"],
+            use_fast=True
+        )
         tokenizer.save_pretrained(os.path.join(save_dir, name + "_tokenizer"))
 
     def train(self):
@@ -89,12 +93,15 @@ class Trainer:
                 "learning_rate": self.config["learning_rate"],
                 "batch_size": self.config["batch_size"],
                 "epochs": self.config["epochs"],
-                "model": self.config["model_name"],
-                "dropout_rate": self.config.get("dropout_rate", 0.1)
+                "max_len": self.config["max_len"],
+                "model_name": self.config["model_name"],
+                "dropout_rate": self.config.get("dropout_rate", 0.1),
+                "align_type": self.config.get("align_type", "ignore"),
+                "num_labels": len(self.label2id)
             }
         )
-        optimizer = AdamW(self.model.parameters(), lr=self.config["learning_rate"])
 
+        optimizer = AdamW(self.model.parameters(), lr=self.config["learning_rate"])
         loss_fn = torch.nn.CrossEntropyLoss()
 
         for epoch in range(self.num_epochs):
@@ -128,23 +135,31 @@ class Trainer:
 
             eval_loss, eval_f1, all_labels, all_preds = self.eval()
 
-            print("第", epoch + 1, "轮 训练loss:", avg_train_loss)
-            print("验证F1:", eval_f1)
+            f1, precision, recall = evaluate_ner(all_labels, all_preds, plot=False)
+
+            print("第", epoch + 1, "轮")
+            print("训练loss:", avg_train_loss)
+            print("验证集 Precision:", precision, "Recall:", recall, "F1:", f1)
 
             swanlab.log({
                 "train/loss": avg_train_loss,
                 "eval/loss": eval_loss,
-                "eval/f1": eval_f1,
+                "eval/precision": precision,
+                "eval/recall": recall,
+                "eval/f1": f1,
                 "epoch": epoch + 1
             })
 
             if eval_f1 > self.best_f1:
                 self.best_f1 = eval_f1
                 self.save_model()
-                print("保存最佳模型", eval_f1)
-                evaluate_ner(all_labels, all_preds, plot=False)
+                print("保存最佳模型，F1:", eval_f1)
+                swanlab.log({
+                    "best/f1": eval_f1,
+                    "best/epoch": epoch + 1
+                })
 
-        print("best f1:", self.best_f1)
+        print("最佳F1:", self.best_f1)
         self.test()
         swanlab.finish()
 
@@ -184,6 +199,9 @@ class Trainer:
         return avg_loss, f1, all_labels, all_preds
 
     def test(self):
+        if not os.path.exists(self.config["save_path"]):
+            return
+
         self.model.load_state_dict(torch.load(self.config["save_path"], map_location=self.device))
         self.model.eval()
         all_preds = []
@@ -202,9 +220,14 @@ class Trainer:
                 all_preds.extend(batch_preds)
                 all_labels.extend(batch_labels)
 
-        f1, _, _ = evaluate_ner(all_labels, all_preds, plot=True, save_path="test_results.png")
-        print("测试集F1:", f1)
-        swanlab.log({"test/f1": f1})
+        f1, precision, recall = evaluate_ner(all_labels, all_preds, plot=True, save_path="test_results.png")
+        print("测试集:", precision, "Recall:", recall, "F1:", f1)
+
+        swanlab.log({
+            "test/precision": precision,
+            "test/recall": recall,
+            "test/f1": f1
+        })
 
     def run(self):
         self.load_data()
