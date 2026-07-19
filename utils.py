@@ -55,6 +55,81 @@ def evaluate_ner(y_true, y_pred, plot=True, save_path=None):
     return f1, p, r
 
 
+def print_report(y_true, y_pred):
+    type_tp = {}
+    type_pred = {}
+    type_true = {}
+    for i in range(len(y_true)):
+        true_entities = extract_entities(y_true[i])
+        pred_entities = extract_entities(y_pred[i])
+        for entity in pred_entities:
+            label = entity[0]
+            type_pred[label] = type_pred.get(label, 0) + 1
+            if entity in true_entities:
+                type_tp[label] = type_tp.get(label, 0) + 1
+        for entity in true_entities:
+            label = entity[0]
+            type_true[label] = type_true.get(label, 0) + 1
+    p, r, f1, tp, pred_sum, true_sum = Ner_metrics(y_true, y_pred)
+    all_labels = []
+    for label in type_true.keys():
+        if label not in all_labels:
+            all_labels.append(label)
+    for label in type_pred.keys():
+        if label not in all_labels:
+            all_labels.append(label)
+    all_labels.sort()
+    print("类型    精确率  召回率  F1  样本数")
+
+    for label in all_labels:
+        tp_c = type_tp.get(label, 0)
+        pred_c = type_pred.get(label, 0)
+        true_c = type_true.get(label, 0)
+        if pred_c == 0:
+            p_c = 0
+        else:
+            p_c = tp_c / pred_c
+        if true_c == 0:
+            r_c = 0
+        else:
+            r_c = tp_c / true_c
+        if p_c + r_c == 0:
+            f_c = 0
+        else:
+            f_c = 2 * p_c * r_c / (p_c + r_c)
+        print(label, round(p_c, 4), round(r_c, 4), round(f_c, 4), true_c)
+
+
+    print("micro", round(p, 4), round(r, 4), round(f1, 4), true_sum)
+
+    macro_p = 0
+    macro_r = 0
+    count = 0
+    for label in all_labels:
+        tp_c = type_tp.get(label, 0)
+        pred_c = type_pred.get(label, 0)
+        true_c = type_true.get(label, 0)
+        if pred_c > 0:
+            macro_p = macro_p + tp_c / pred_c
+        if true_c > 0:
+            macro_r = macro_r + tp_c / true_c
+        count = count + 1
+
+    if count > 0:
+        macro_p = macro_p / count
+        macro_r = macro_r / count
+    else:
+        macro_p = 0
+        macro_r = 0
+
+    if macro_p + macro_r == 0:
+        macro_f = 0
+    else:
+        macro_f = 2 * macro_p * macro_r / (macro_p + macro_r)
+
+    print("macro", round(macro_p, 4), round(macro_r, 4), round(macro_f, 4), true_sum)
+
+
 def decode_predict(input_ids, preds, labels, attention_mask, id2label):
     all_pred = []
     all_label = []
