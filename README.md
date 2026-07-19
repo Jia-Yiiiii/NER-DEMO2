@@ -131,11 +131,11 @@ python trainer.py configs/Bert_Config_exp1.json
 | micro avg | 0.6698 | 0.7010 | 0.6850 | 408 |
 | macro avg | 0.4942 | 0.4941 | 0.4942 | 408 |
 
-训练曲线：
+**训练曲线**
 
-<img width="400" alt="train loss" src="https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe" />
-<img width="400" alt="eval f1" src="https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471" />
-<img width="400" alt="eval loss" src="https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c" />
+| | | |
+|:---:|:---:|:---:|
+| ![train loss](https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe) | ![eval f1](https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471) | ![eval loss](https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c) |
 
 实验日志：
 https://swanlab.cn/@2225/bert-ner1/runs/5231tc0b/overview
