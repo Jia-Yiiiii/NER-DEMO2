@@ -96,11 +96,6 @@ python trainer.py configs/Bert_Config_exp4.json
 
 训练曲线：
 
-![训练损失](https://github.com/user-attachments/assets/f3e40a8a-8628-460c-ac8d-ef4bbe1bbc93)
-
-![验证集F1](https://github.com/user-attachments/assets/830c2fd8-e166-4a00-8137-73199fae30ac)
-
-![验证集损失](https://github.com/user-attachments/assets/2429c10a-4d5f-4d2b-b051-0e727f71f234)
 <img width="547" height="335" alt="image" src="https://github.com/user-attachments/assets/cf2f6e1c-b7ea-449e-8ce4-7cbf5e5db72c" />
 <img width="1537" height="658" alt="image" src="https://github.com/user-attachments/assets/4bb5e3ee-5387-44a4-831c-09ee9cd9a0e9" />
 <img width="1578" height="647" alt="image" src="https://github.com/user-attachments/assets/1d356e79-2ccf-4740-af33-520ca03a60be" />
@@ -128,11 +123,7 @@ python trainer.py configs/Bert_Config_exp5.json
 
 训练曲线：
 
-![训练损失](https://github.com/user-attachments/assets/bc57830c-9ccc-4c11-a28b-9e7f4b020e65)
 
-![验证集F1](https://github.com/user-attachments/assets/b8b9dc5f-3603-4270-b096-422bc92707d1)
-
-![验证集损失](https://github.com/user-attachments/assets/bad83de4-f5db-40e7-8c74-232a27eb42bb)
 <img width="613" height="296" alt="image" src="https://github.com/user-attachments/assets/9b7e1f8c-783a-419a-83e3-27c9822c8b5d" />
 <img width="1562" height="602" alt="image" src="https://github.com/user-attachments/assets/d3aeeeac-755f-46b5-b6dc-3ba35a1f07a9" />
 <img width="1588" height="655" alt="image" src="https://github.com/user-attachments/assets/0157f0f5-42ba-42d4-b96e-c2ce3c1f563b" />
@@ -166,11 +157,7 @@ python trainer.py configs/Bert_Config_exp1.json
 
 训练曲线：
 
-![训练损失](https://github.com/user-attachments/assets/163aa6d9-b01e-4b6b-8b5c-6704b2c12ebe)
 
-![验证集F1](https://github.com/user-attachments/assets/275c34cc-77fc-4aec-9f25-0601120ad471)
-
-![验证集损失](https://github.com/user-attachments/assets/2bcb5179-1105-4e71-a5bc-2718df69db4c)
 <img width="567" height="361" alt="image" src="https://github.com/user-attachments/assets/46a95a90-ccfd-48a2-a48f-c8606c220a45" />
 <img width="1532" height="703" alt="image" src="https://github.com/user-attachments/assets/bd11e2b2-6bec-4d7c-b78c-2727b45dabd4" />
 <img width="1572" height="642" alt="image" src="https://github.com/user-attachments/assets/f93a5dd8-f58a-4eda-8bef-b1605ee15e1e" />
@@ -203,11 +190,6 @@ python trainer.py configs/Bert_Config_exp2.json
 
 训练曲线：
 
-![训练损失](https://github.com/user-attachments/assets/e98eaece-201d-40a2-91ad-be06bc8a67c7)
-
-![验证集F1](https://github.com/user-attachments/assets/a905bfdb-41d1-488a-ab52-df42a64e4837)
-
-![验证集损失](https://github.com/user-attachments/assets/9dabf1c3-0eee-484a-adbe-c1bbd15de150)
 <img width="541" height="328" alt="image" src="https://github.com/user-attachments/assets/59204772-18cb-4367-8261-08248c0731b0" />
 <img width="1533" height="666" alt="image" src="https://github.com/user-attachments/assets/a83f04c4-eb17-473d-8249-40b5cb390c22" />
 <img width="1522" height="697" alt="image" src="https://github.com/user-attachments/assets/1b45ce08-234b-4c88-bb12-9b8d845aa653" />
@@ -240,9 +222,7 @@ python trainer.py configs/Bert_Config_exp3.json
 
 
 训练曲线：
-![训练损失](https://github.com/user-attachments/assets/901a14f2-db6c-46f5-b0a2-f5e3056fc45d)
-![验证集F1](https://github.com/user-attachments/assets/6f8499e3-44d9-4339-b4c0-fdd72b872704)
-![验证集损失](https://github.com/user-attachments/assets/bc98ab94-3bd5-437a-a414-31040b4835de)
+
 
 
 <img width="557" height="328" alt="image" src="https://github.com/user-attachments/assets/901a14f2-db6c-46f5-b0a2-f5e3056fc45d" />
