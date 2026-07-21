@@ -238,9 +238,9 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("config_path")
-    args = parser.parse_args()
+    pa= argparse.ArgumentParser()
+    pa.add_argument("config_path")
+    args = pa.parse_args()
 
     with open(args.config_path, "r", encoding="utf-8") as f:
         config = json.load(f)
