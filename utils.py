@@ -102,33 +102,35 @@ def print_report(y_true, y_pred):
 
     print("micro", round(p, 4), round(r, 4), round(f1, 4), true_sum)
 
-    macro_p = 0
-    macro_r = 0
+    macro_f_sum = 0
+    macro_p_sum = 0
+    macro_r_sum = 0
     count = 0
+
     for label in all_labels:
         tp_c = type_tp.get(label, 0)
         pred_c = type_pred.get(label, 0)
         true_c = type_true.get(label, 0)
-        if pred_c > 0:
-            macro_p = macro_p + tp_c / pred_c
-        if true_c > 0:
-            macro_r = macro_r + tp_c / true_c
-        count = count + 1
+
+        p_c = tp_c / pred_c if pred_c > 0 else 0
+        r_c = tp_c / true_c if true_c > 0 else 0
+        f_c = 2 * p_c * r_c / (p_c + r_c) if (p_c + r_c) > 0 else 0
+
+        macro_p_sum += p_c
+        macro_r_sum += r_c
+        macro_f_sum += f_c
+        count += 1
 
     if count > 0:
-        macro_p = macro_p / count
-        macro_r = macro_r / count
+        macro_p = macro_p_sum / count
+        macro_r = macro_r_sum / count
+        macro_f = macro_f_sum / count
     else:
         macro_p = 0
         macro_r = 0
-
-    if macro_p + macro_r == 0:
         macro_f = 0
-    else:
-        macro_f = 2 * macro_p * macro_r / (macro_p + macro_r)
 
     print("macro", round(macro_p, 4), round(macro_r, 4), round(macro_f, 4), true_sum)
-
 
 def decode_predict(input_ids, preds, labels, attention_mask, id2label):
     all_pred = []
