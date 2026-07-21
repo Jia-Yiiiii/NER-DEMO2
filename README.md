@@ -121,6 +121,7 @@ python trainer.py configs/Bert_Config_exp5.json
 | macro  | 0.9161   | 0.9063   | 0.9112 | 1261   |
 
 训练曲线：
+
 <img width="547" height="395" alt="image" src="https://github.com/user-attachments/assets/d3fbc11d-99d4-4f9b-97ab-e28cad037917" />
 <img width="1513" height="697" alt="image" src="https://github.com/user-attachments/assets/1be4bb36-8f94-4e1b-bdb5-edff061cb8e3" />
 <img width="1558" height="642" alt="image" src="https://github.com/user-attachments/assets/b6fa89af-2c4a-4902-b02c-099a76e96d93" />
