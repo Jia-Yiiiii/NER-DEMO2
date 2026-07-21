@@ -155,6 +155,7 @@ python trainer.py configs/Bert_Config_exp1.json
 | macro    | 0.5198   | 0.4406   | 0.4697 | 408    |
 
 训练曲线：
+
 <img width="540" height="300" alt="image" src="https://github.com/user-attachments/assets/4e3b22b4-52f9-4b0b-b624-50c51437fc38" />
 <img width="1590" height="593" alt="image" src="https://github.com/user-attachments/assets/7c6a9581-104f-4aa2-9203-fe0bf02edf78" />
 <img width="1577" height="640" alt="image" src="https://github.com/user-attachments/assets/4223fde4-67b9-44ee-bd46-73fa11c71e68" />
@@ -218,6 +219,7 @@ python trainer.py configs/Bert_Config_exp3.json
 
 
 训练曲线：
+
 <img width="532" height="293" alt="image" src="https://github.com/user-attachments/assets/4e5870a4-292b-4d2b-80ce-79a4fdfc2ddd" />
 <img width="1557" height="592" alt="image" src="https://github.com/user-attachments/assets/54090654-88a9-4cd1-825f-37a259c9754c" />
 <img width="1566" height="637" alt="image" src="https://github.com/user-attachments/assets/4d820f36-cfe4-4772-a782-440697ccffd4" />
