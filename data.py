@@ -112,18 +112,3 @@ class NERDataset(Dataset):
 
 
 
-if __name__ == "__main__":
-
-    config = {
-        'data_path': 'data/train.txt',
-        'max_len': 128,
-        'align_type': 'ignore',
-    }
-
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-chinese")
-    dataset = NERDataset(config, tokenizer)
-    loader = dataset.get_loader(batch_size=32)
-    for batch in loader:
-        input_ids, attention_mask, labels = batch
-        print(input_ids.shape)
-        break
