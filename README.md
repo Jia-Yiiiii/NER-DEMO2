@@ -86,21 +86,22 @@ python trainer.py configs/Bert_Config_exp4.json
 
 测试集结果：
 
-| 类型   | 精确率   | 召回率   | F1     | 样本数 |
-|--------|----------|----------|--------|--------|
-| LOC    | 0.9231   | 0.8924   | 0.9075 | 632    |
-| ORG    | 0.8664   | 0.8470   | 0.8566 | 268    |
-| PER    | 0.9368   | 0.9446   | 0.9407 | 361    |
-| micro  | 0.9151   | 0.8977   | 0.9063 | 1261   |
-| macro  | 0.9088   | 0.8947   | 0.9016 | 1261   |
+| 类型   | 精确率 | 召回率 | F1     | 样本数 |
+|--------|--------|--------|--------|--------|
+| LOC    | 0.8949 | 0.8892 | 0.8921 | 632    |
+| ORG    | 0.8606 | 0.8060 | 0.8324 | 268    |
+| PER    | 0.9344 | 0.9474 | 0.9409 | 361    |
+| micro  | 0.8996 | 0.8882 | 0.8939 | 1261   |
+| macro  | 0.8966 | 0.8809 | 0.8884 | 1261   |
 
 训练曲线：
 
-<img width="515" height="336" alt="image" src="https://github.com/user-attachments/assets/3b12616d-9d59-4d00-bd1a-a006050b3332" />
-<img width="1537" height="662" alt="image" src="https://github.com/user-attachments/assets/7ddc587c-be4f-42b5-9262-801011af1b4d" />
-<img width="1518" height="695" alt="image" src="https://github.com/user-attachments/assets/6eef4a58-1e2f-414f-bb77-cd9b1267b5dd" />
+<img width="490" height="355" alt="image" src="https://github.com/user-attachments/assets/a1adec38-34a9-40fe-a31b-4d68d6522b15" />
+<img width="1537" height="647" alt="image" src="https://github.com/user-attachments/assets/0939770f-f4ea-441d-93f4-159e66918d49" />
+<img width="1522" height="688" alt="image" src="https://github.com/user-attachments/assets/d457a950-ad78-4b98-bbac-c0a196c0018d" />
 
-实验日志：https://swanlab.cn/@2225/bert-ner1/runs/okdbik55/overview
+
+实验日志：https://swanlab.cn/@2225/bert-ner1/runs/vsp3un4p/overview
 
 #### (2) chinese-bert-wwm
 
