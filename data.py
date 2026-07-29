@@ -2,113 +2,132 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer
 
+
 class NERDataset(Dataset):
     def __init__(self, config, tokenizer):
         self.tokenizer = tokenizer
         self.max_len = config['max_len']
         self.align_type = config.get('align_type', 'ignore')
         self.data = self.read_data(config['data_path'])
-        if 'label2id' in config and config['label2id'] is not None:
-            self.label2id = config['label2id']
-            self.id2label = {v: k for k, v in self.label2id.items()}
-        else:
-            labels = set(['O'])
-            for tokens, label_list in self.data:
-                for label in label_list:
-                    labels.add(label)
-            label_list = sorted(labels)
-            self.label2id = {}
-            self.id2label = {}
-            for i in range(len(label_list)):
-                self.label2id[label_list[i]] = i
-                self.id2label[i] = label_list[i]
+        self.label2id, self.id2label = self.get_label_map(config)
 
     def read_data(self, file_path):
         data = []
-        tokens = []
-        labels = []
         with open(file_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if line == '' or line == '0':
-                    if tokens:
-                        data.append((tokens, labels))
-                        tokens = []
-                        labels = []
-                    continue
-                parts = line.split()
-                if len(parts) >= 2:
-                    tokens.append(parts[0])
-                    labels.append(parts[1] if parts[1] != '0' else 'O')
-        if tokens:
-            data.append((tokens, labels))
+            content = f.read()
+        for sentence in content.strip().split('\n\n'):
+            if not sentence:
+                continue
+            tokens, labels = [], []
+            for line in sentence.strip().split('\n'):
+                if line.strip():
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        tokens.append(parts[0])
+                        labels.append(parts[1] if parts[1] != '0' else 'O')
+            if tokens:
+                data.append((tokens, labels))
         return data
 
-    def __len__(self):
-        return len(self.data)
+    def get_label_map(self, config):
+        if 'label2id' in config and config['label2id'] is not None:
+            label2id = config['label2id']
+            id2label = {}
+            for k, v in label2id.items():
+                id2label[v] = k
+            return label2id, id2label
 
-    def __getitem__(self, idx):
-        words, tags = self.data[idx]
+        labels = {'O'}
+        for _, tag_list in self.data:
+            for tag in tag_list:
+                labels.add(tag)
 
-        tokenized = self.tokenizer(
-            words,
-            is_split_into_words=True,
-            max_length=self.max_len,
-            padding='max_length',
-            truncation=True,
-            return_tensors=None
-        )
+        labels = sorted(labels)
+        label2id = {}
+        id2label = {}
+        for i, label in enumerate(labels):
+            label2id[label] = i
+            id2label[i] = label
 
-        word_ids = tokenized.word_ids()
-        L = len(word_ids)
+        return label2id, id2label
 
+    def align_labels(self, word_ids, tags):
         label_ids = []
         prev_wid = -1
 
-        for i in range(L):
-            wid = word_ids[i]
-
+        for wid in word_ids:
             if wid is None:
                 label_ids.append(-100)
                 continue
 
             if wid != prev_wid:
                 prev_wid = wid
-                if wid < len(tags):
-                    label = tags[wid]
-                else:
-                    label = 'O'
+                label = tags[wid] if wid < len(tags) else 'O'
                 label_ids.append(self.label2id.get(label, -100))
-                continue
-
-            if self.align_type == 'same':
-                if wid < len(tags):
-                    label = tags[wid]
+            else:
+                if self.align_type == 'same':
+                    label = tags[wid] if wid < len(tags) else 'O'
                     if label.startswith('B-'):
                         label = 'I-' + label[2:]
                     label_ids.append(self.label2id.get(label, -100))
                 else:
-                    label_ids.append(self.label2id.get('O', -100))
-            else:
-                label_ids.append(-100)
+                    label_ids.append(-100)
 
-        input_ids = torch.tensor(tokenized['input_ids'], dtype=torch.long)
-        attention_mask = torch.tensor(tokenized['attention_mask'], dtype=torch.long)
-        label_tensor = torch.tensor(label_ids, dtype=torch.long)
-        return input_ids, attention_mask, label_tensor
+        return label_ids
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        words, tags = self.data[idx]
+        tokenized = self.tokenizer(
+            words,
+            is_split_into_words=True,
+            max_length=self.max_len,
+            truncation=True,
+            return_tensors=None
+        )
+
+        word_ids = tokenized.word_ids()
+        label_ids = self.align_labels(word_ids, tags)
+
+        return {
+            'input_ids': tokenized['input_ids'],
+            'attention_mask': tokenized['attention_mask'],
+            'labels': label_ids,
+            'length': len(tokenized['input_ids'])
+        }
 
     def collate_fn(self, batch):
-        all_input_ids = []
-        all_attention_masks = []
-        all_labels = []
+        max_len = max(item['length'] for item in batch)
+
+        input_ids = []
+        attention_masks = []
+        labels = []
+
         for item in batch:
-            all_input_ids.append(item[0])
-            all_attention_masks.append(item[1])
-            all_labels.append(item[2])
-        return torch.stack(all_input_ids), torch.stack(all_attention_masks), torch.stack(all_labels)
+            pad_len = max_len - len(item['input_ids'])
+
+            input_ids.append(
+                item['input_ids'] + [0] * pad_len
+            )
+            attention_masks.append(
+                item['attention_mask'] + [0] * pad_len
+            )
+            labels.append(
+                item['labels'] + [-100] * pad_len
+            )
+
+        return (
+            torch.tensor(input_ids, dtype=torch.long),
+            torch.tensor(attention_masks, dtype=torch.long),
+            torch.tensor(labels, dtype=torch.long)
+        )
 
     def get_loader(self, batch_size=32, shuffle=True):
-        return DataLoader(self, batch_size=batch_size, shuffle=shuffle, collate_fn=self.collate_fn)
-
-
-
+        return DataLoader(
+            self,
+            batch_size=batch_size,
+            shuffle=shuffle,
+            collate_fn=self.collate_fn
+        )
