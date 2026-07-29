@@ -3,28 +3,6 @@
 本项目使用 BERT 模型在 MSRA 和 Weibo 两个中文数据集上进行命名实体识别（NER）实验，并对比了不同模型和标签对齐策略的效果。
 
 ---
-## 预训练模型本地下载与加载
-本项目采用**本地路径加载预训练权重**。若直接调用 `from_pretrained("模型名称")`，`transformers` 库默认自动下载缓存文件，会同时拉取 PyTorch、TensorFlow 等多框架权重，存在大量冗余文件。手动下载仅保留 PyTorch 运行必需文件，磁盘占用更小，保证运行环境统一。
-
-项目使用两组预训练模型：
-- `bert-base-chinese`
-- `hfl-chinese-bert-wwm`
-
-安装下载工具：
-```bash
-pip install -U "huggingface_hub[cli]"
-
-# 下载 bert-base-chinese
-huggingface-cli download bert-base-chinese \
---local-dir ./bert-base-chinese \
---local-dir-use-symlinks False
-
-# 下载 hfl/chinese-bert-wwm
-huggingface-cli download hfl/chinese-bert-wwm \
---local-dir ./hfl-chinese-bert-wwm \
---local-dir-use-symlinks False
-
-
 
 ## 一、数据分析
 
