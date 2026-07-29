@@ -1,5 +1,4 @@
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 import json
 import torch
 import swanlab
@@ -8,8 +7,9 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 from data import NERDataset
 from model import BertForNER
-from utils import set_seed, evaluate_ner, decode_predict, print_report
+from utils import set_seed, decode_predict, NEREvaluator
 import argparse
+
 class Trainer:
     def __init__(self, config):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -22,11 +22,12 @@ class Trainer:
         self.test_loader = None
         self.label2id = None
         self.id2label = None
+        self.evaluator = NEREvaluator()
         set_seed(config.get("seed", 42))
 
     def load_data(self):
         tokenizer = AutoTokenizer.from_pretrained(
-            self.config["model_name"],
+            self.config["model_path"],
             use_fast=True
         )
 
@@ -81,7 +82,7 @@ class Trainer:
             json.dump(self.label2id, f)
 
         tokenizer = AutoTokenizer.from_pretrained(
-            self.config["model_name"],
+            self.config["model_path"],
             use_fast=True
         )
         tokenizer.save_pretrained(os.path.join(save_dir, name + "_tokenizer"))
@@ -94,7 +95,7 @@ class Trainer:
                 "batch_size": self.config["batch_size"],
                 "epochs": self.config["epochs"],
                 "max_len": self.config["max_len"],
-                "model_name": self.config["model_name"],
+                "model_name": self.config["model_path"],
                 "dropout_rate": self.config.get("dropout_rate", 0.1),
                 "align_type": self.config.get("align_type", "ignore"),
                 "num_labels": len(self.label2id)
@@ -133,20 +134,18 @@ class Trainer:
 
             avg_train_loss = total_loss / count
 
-            eval_loss, eval_f1, all_labels, all_preds = self.eval()
-
-            f1, precision, recall = evaluate_ner(all_labels, all_preds, plot=False)
+            eval_loss, eval_f1, eval_precision, eval_recall, all_labels, all_preds = self.eval()
 
             print("第", epoch + 1, "轮")
             print("训练loss:", avg_train_loss)
-            print("验证集 Precision:", precision, "Recall:", recall, "F1:", f1)
+            print("验证集 Precision:", eval_precision, "Recall:", eval_recall, "F1:", eval_f1)
 
             swanlab.log({
                 "train/loss": avg_train_loss,
                 "eval/loss": eval_loss,
-                "eval/precision": precision,
-                "eval/recall": recall,
-                "eval/f1": f1,
+                "eval/precision": eval_precision,
+                "eval/recall": eval_recall,
+                "eval/f1": eval_f1,
                 "epoch": epoch + 1
             })
 
@@ -194,9 +193,9 @@ class Trainer:
                 all_labels.extend(batch_labels)
 
         avg_loss = total_loss / count
-        f1, _, _ = evaluate_ner(all_labels, all_preds, plot=False)
+        f1, precision, recall = self.evaluator.evaluate(all_labels, all_preds)
 
-        return avg_loss, f1, all_labels, all_preds
+        return avg_loss, f1, precision, recall, all_labels, all_preds
 
     def test(self):
         if not os.path.exists(self.config["save_path"]):
@@ -220,9 +219,9 @@ class Trainer:
                 all_preds.extend(batch_preds)
                 all_labels.extend(batch_labels)
 
-        print_report(all_labels, all_preds)
+        self.evaluator.print_report(all_labels, all_preds)
 
-        f1, precision, recall = evaluate_ner(all_labels, all_preds, plot=True, save_path="test_results.png")
+        f1, precision, recall = self.evaluator.evaluate(all_labels, all_preds)
         print("测试集:", precision, "Recall:", recall, "F1:", f1)
 
         swanlab.log({
@@ -238,7 +237,7 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    pa= argparse.ArgumentParser()
+    pa = argparse.ArgumentParser()
     pa.add_argument("config_path")
     args = pa.parse_args()
 
