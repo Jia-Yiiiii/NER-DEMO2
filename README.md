@@ -12,19 +12,63 @@
 - `bert-base-chinese`
 - `hfl/chinese-bert-wwm`
 
-安装下载工具：
+
 ```bash
-pip install -U "huggingface_hub[cli]"
+
 
 # 下载 bert-base-chinese
-huggingface-cli download bert-base-chinese \
-  --local-dir ./bert-base-chinese \
-  --local-dir-use-symlinks False
+import os
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
+from huggingface_hub import hf_hub_download
+
+repo_id = "bert-base-chinese"
+local_folder = "./bert-base-chinese"
+os.makedirs(local_folder, exist_ok=True)
+
+file_list = [
+    "config.json",
+    "vocab.txt",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "pytorch_model.bin"
+]
+
+for filename in file_list:
+
+    hf_hub_download(
+        repo_id=repo_id,
+        filename=filename,
+        local_dir=local_folder,
+        force_download=True
+    )
+print("全部文件下载完成！")
 
 # 下载 hfl/chinese-bert-wwm
-huggingface-cli download hfl/chinese-bert-wwm \
-  --local-dir ./hfl-chinese-bert-wwm \
-  --local-dir-use-symlinks False
+import os
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
+from huggingface_hub import hf_hub_download
+
+repo_id = "hfl/chinese-bert-wwm"
+local_folder = "./hfl-chinese-bert-wwm"
+os.makedirs(local_folder, exist_ok=True)
+
+file_list = [
+    "config.json",
+    "vocab.txt",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "pytorch_model.bin"
+]
+
+for filename in file_list:
+    hf_hub_download(
+        repo_id=repo_id,
+        filename=filename,
+        local_dir=local_folder
+    )
+print("全部文件下载完成！")
 ```
 
 ---
