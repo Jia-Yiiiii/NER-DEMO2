@@ -11,7 +11,11 @@ class NERDataset(Dataset):
         self.data = self.read_data(config['data_path'])
         self.label2id, self.id2label = self.get_label_map(config)
 
+
+        self.raw_data = self.data
+
     def read_data(self, file_path):
+
         data = []
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -30,6 +34,7 @@ class NERDataset(Dataset):
         return data
 
     def get_label_map(self, config):
+
         if 'label2id' in config and config['label2id'] is not None:
             label2id = config['label2id']
             id2label = {}
@@ -52,6 +57,7 @@ class NERDataset(Dataset):
         return label2id, id2label
 
     def align_labels(self, word_ids, tags):
+
         label_ids = []
         prev_wid = -1
 
@@ -79,50 +85,39 @@ class NERDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
+
         words, tags = self.data[idx]
+        return words, tags
+
+    def collate_fn(self, batch):
+        words_list = []
+        tags_list = []
+        for words, tags in batch:
+            words_list.append(words)
+            tags_list.append(tags)
+
         tokenized = self.tokenizer(
-            words,
+            words_list,
             is_split_into_words=True,
             max_length=self.max_len,
             truncation=True,
-            return_tensors=None
+            padding=True,
+            return_tensors='pt'
         )
 
-        word_ids = tokenized.word_ids()
-        label_ids = self.align_labels(word_ids, tags)
-
-        return {
-            'input_ids': tokenized['input_ids'],
-            'attention_mask': tokenized['attention_mask'],
-            'labels': label_ids,
-            'length': len(tokenized['input_ids'])
-        }
-
-    def collate_fn(self, batch):
-        max_len = max(item['length'] for item in batch)
-
-        input_ids = []
-        attention_masks = []
         labels = []
+        for idx in range(len(batch)):
+            word_ids = tokenized.word_ids(idx)
+            label_ids = self.align_labels(word_ids, tags_list[idx])
+            labels.append(torch.tensor(label_ids, dtype=torch.long))
 
-        for item in batch:
-            pad_len = max_len - len(item['input_ids'])
-
-            input_ids.append(
-                item['input_ids'] + [0] * pad_len
-            )
-            attention_masks.append(
-                item['attention_mask'] + [0] * pad_len
-            )
-            labels.append(
-                item['labels'] + [-100] * pad_len
-            )
-
-        return (
-            torch.tensor(input_ids, dtype=torch.long),
-            torch.tensor(attention_masks, dtype=torch.long),
-            torch.tensor(labels, dtype=torch.long)
+        labels = torch.nn.utils.rnn.pad_sequence(
+            labels,
+            batch_first=True,
+            padding_value=-100
         )
+
+        return tokenized['input_ids'], tokenized['attention_mask'], labels
 
     def get_loader(self, batch_size=32, shuffle=True):
         return DataLoader(
