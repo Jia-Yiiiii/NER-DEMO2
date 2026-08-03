@@ -10,12 +10,9 @@ class NERDataset(Dataset):
         self.align_type = config.get('align_type', 'ignore')
         self.data = self.read_data(config['data_path'])
         self.label2id, self.id2label = self.get_label_map(config)
-
-
         self.raw_data = self.data
 
     def read_data(self, file_path):
-
         data = []
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -60,12 +57,10 @@ class NERDataset(Dataset):
 
         label_ids = []
         prev_wid = -1
-
         for wid in word_ids:
             if wid is None:
                 label_ids.append(-100)
                 continue
-
             if wid != prev_wid:
                 prev_wid = wid
                 label = tags[wid] if wid < len(tags) else 'O'
